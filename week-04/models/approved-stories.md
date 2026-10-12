@@ -21,12 +21,12 @@ or unblock rooms and review usage.
 
 | ID | Story | Rules |
 | --- | --- | --- |
-| US-01 | As a student, I want to book a free study room for a time slot, so that I have a place to work, and I get a confirmation when the booking succeeds. | R1, R2, R3, R4 |
-| US-02 | As a student, I want to see which rooms are free at a given time, so that I can choose one before booking. | — |
-| US-03 | As a student, I want to cancel one of my own bookings, so that the room is released for others. | R2 |
-| US-04 | As an administrator, I want to block a room, so that no new bookings can be made for it. | R3 |
-| US-05 | As an administrator, I want to unblock a room, so that students can book it again. | R3 |
-| US-06 | As an administrator, I want to review how rooms are used, so that I can plan capacity. | — |
+| US-01 | As a Student, I want to search for available study rooms by date and time, so that I can quickly find a room that is free when I need it. | - |
+| US-02 | As a Student, I want to book a free room for a specific time slot, so that I can guarantee a space for my study session. | R1, R2 |
+| US-03 | As a Student, I want to cancel my existing booking, so that I can free up the room if my plans change. | R2 |
+| US-04 | As a Student, I want to receive a confirmation after booking or cancelling, so that I have proof my request went through correctly. | R4 |
+| US-05 | As an Administrator, I want to block a room from being booked and unblock it later, so that I can take a room out of service when it is unusable and make it available again once it is fixed. | R3 |
+| US-06 | As an Administrator, I want to review room usage over a period, so that I can make informed decisions about how rooms are managed. | — |
 
 **Out of scope** (do not model): payments, equipment in rooms, recurring bookings, waiting lists,
 notifications other than the booking confirmation, user registration.
