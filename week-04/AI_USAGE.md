@@ -11,16 +11,16 @@ responsible for the accuracy of everything you submit, including every diagram a
 | <assistant> | <model> | Critique of the revised diagrams | `lab-report.md` §6 |
 | | | | |
 
-**The files in `models/original/` are the AI's first replies, unedited:** yes / no
+**The files in `models/original/` are the AI's first replies, unedited:** yes / no yes
 <!-- If "no", say what you changed before saving. An honest "no" costs far less than a quiet edit. -->
 
-**The revised diagrams in `models/` were corrected by me, and I can explain every element:** yes / no
+**The revised diagrams in `models/` were corrected by me, and I can explain every element:** yes / no yes
 
-**Did an AI write any part of `lab-report.md` other than the critique it produced?** yes / no
-<!-- If yes: which section, and what you changed afterwards. -->
+**Did an AI write any part of `lab-report.md` other than the critique it produced?** yes / no yes
+<!-- If yes: which section, and what you changed afterwards. --> consistency table
 
 **Anything I accepted from the AI without fully understanding it:**
-<!-- Name the file and the element. -->
+<!-- Name the file and the element. --> diagram codes and test codes
 
-Signed: <your name>
-Date:
+Signed: Barakhan Akniyet
+Date: 12.10.2026
