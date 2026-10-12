@@ -1,0 +1,43 @@
+@startuml
+skinparam shadowing false
+autonumber
+
+actor Student
+participant BookingService
+database BookingRepository
+
+Student -> BookingService : bookRoom(studentId, roomId, startTime, durationMinutes)
+activate BookingService
+
+BookingService -> BookingService : validateRequest(startTime, durationMinutes)\n[R1: future start, 0 < duration <= 120 min]
+
+alt [R1 fails: start not in future, or duration <= 0, or duration > 120]
+  BookingService --> Student : rejected(reason = INVALID_TIME_OR_DURATION)
+else [R1 passes]
+  BookingService -> BookingRepository : findRoom(roomId)
+  activate BookingRepository
+  BookingRepository --> BookingService : room
+  deactivate BookingRepository
+
+  BookingService -> BookingRepository : findActiveBookings(roomId, startTime, endTime)
+  activate BookingRepository
+  BookingRepository --> BookingService : overlappingBookings
+  deactivate BookingRepository
+
+  BookingService -> BookingService : checkAvailability(room, overlappingBookings)\n[R3: room not blocked, R2: no overlap]
+
+  alt room available [not blocked (R3) and no overlapping active booking (R2)]
+    BookingService -> BookingRepository : save(booking: status = ACTIVE)
+    activate BookingRepository
+    BookingRepository --> BookingService : savedBooking
+    deactivate BookingRepository
+
+    BookingService -> BookingService : issueConfirmation(savedBooking, type = BOOKING)\n[R4]
+    BookingService --> Student : bookingConfirmation(bookingId, roomId, startTime, durationMinutes)
+  else room unavailable [blocked (R3) or overlapping active booking (R2)]
+    BookingService --> Student : unavailable(reason = ROOM_BLOCKED or SLOT_TAKEN)\n[suggest searching for another room or time]
+  end
+end
+
+deactivate BookingService
+@enduml
