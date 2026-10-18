@@ -798,7 +798,7 @@ end note
      Every URL used in the source checks must also appear here. Example:
      - Sommerville, I. (2016). Software Engineering, 10th ed., Global Edition. Pearson. Ch. 5. -->
 
-- (write here)
+- References: Google annd AI tools for brainstorming
 
 ### Source checks
 
