@@ -15,8 +15,8 @@
 | --- | --- |
 | Coding assistant (tool) | Claude |
 | Coding assistant model | Sonnet 5.5 |
-| Bolt.new model | (write here) |
-| Bolt project link | (write here) |
+| Bolt.new model | Standart |
+| Bolt project link | https://bolt.new/~/sb1-vthn18be |
 | Language | Python |
 | Path | A |
 | Python v1 from | fresh |
@@ -80,17 +80,29 @@
 
 | Branch in v1 (quoted) | AC | Satisfies it? | Why |
 | --- | --- | --- | --- |
-| (write here) | (write here) | (write here) | (write here) |
-| (write here) | (write here) | (write here) | (write here) |
-| (write here) | (write here) | (write here) | (write here) |
-| (write here) | (write here) | (write here) | (write here) |
+| if blocked, return False | AC3 | Yes | Blocked room should be rejected before any other check, so other checks won't be needed |
+| if not (0 <= start < end <= 1440): return False | AC1 | Yes | Matches `0 <= start < end <= 1440` exactly, so end 1440 is inclusive and 1441 is not |
+| if start <= now: return False | AC1 | Yes | Start should be after this time and start == now will be rejected |
+| if end - start > 120: return False | AC2 | Yes | Every duration should be 120 mintues, only 120 is allowed |
 
 ## 4. Prototype v1 in Bolt.new
 
 **Prompt as sent:**
 
 ~~~~text
-(paste here)
+Build one responsive web page called "Smart Campus Room Availability Checker" for ONE selected room, using fictional booking data. The page only checks availability; it does not create or confirm bookings.
+
+User story: As a student, I want to check a room's availability so that I can choose a valid booking time.
+
+Rules:
+- AC1: Candidate times are integer minutes after midnight: 0 <= start < end <= 1440. Start must be strictly after the current time (now).
+- AC2: Duration must not exceed 120 minutes. Exactly 120 minutes is permitted.
+- AC3: Reject every request when the selected room is blocked.
+- AC4: Reject overlap with any existing booking. Intervals touching at an endpoint do not overlap. Intervals include their start and exclude their end.
+- AC5: Show an unambiguous Available or Unavailable result. Never change the existing bookings.
+- AC6: Show understandable validation messages and a usable layout on a narrow mobile screen.
+
+Constraints: no login, no backend, no database, no external API, no payments, and no unrelated features. All logic runs in the browser with fictional data. Do not add a cleaning buffer, a shorter limit than 120 minutes, or a Book button.
 ~~~~
 
 <!-- Main generated files or components, with their path inside web/original/
@@ -98,12 +110,12 @@
 
 | Generated file or component | Path | Its role |
 | --- | --- | --- |
-| (write here) | (write here) | (write here) |
-| (write here) | (write here) | (write here) |
+| package.json | sis-03/web/original/project/package.json | it's the project configuration |
+| index.html | sis-03/web/original/project/index.html | html did the structure of the site, the first page that loads first |
 
 **What v1 does:**
 
-- (write here)
+- AC1 requires the range 0 <= start < end <= 1440. AC2 the duration always should be 120 minutes. AC1 booking time should be greater than this time
 
 ## 5. Test cases — executed on both artifacts
 
