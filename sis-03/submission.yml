@@ -39,7 +39,7 @@ checker:                        # from your LAST run of python tests/check_sis.p
   pass: 36
   fail: 13
   error: 6
-  commit: b1fc93d                      # git rev-parse --short HEAD, run right after that checker run
+  commit: dc37aa2                      # git rev-parse --short HEAD, run right after that checker run
 
 counts:                         # the validator re-measures every one
   tests: 19                       # Path A: the N in "Ran N tests". Path B: how many tests your suite runs
