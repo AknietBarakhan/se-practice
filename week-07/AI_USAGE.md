@@ -6,25 +6,25 @@ including anything an AI tool produced.
 
 | Tool | Exact model / plan | Used for | Which files it touched |
 | --- | --- | --- | --- |
-| | | the first test suite (Task 3) | |
-| | | the improvement prompt (Task 5) | |
-| | | | |
+| Claude | Sonnet 5.5 | the first test suite (Task 3) | suites/first/booking.test.ts |
+| Claude | Sonnet 5.5 | the improvement prompt (Task 5) | lab-report.md |
+| Claude | Sonnet 5.5 | refactoring the final test blocks | starter/src/booking.test.ts |
 
-**I used an assistant to extract `canBook` (Task 1), or to fix a defect in it:** yes / no
+**I used an assistant to extract `canBook` (Task 1), or to fix a defect in it:** yes / no yes. I moved the logic from `src/App.tsx` into a new `src/booking.ts` module with help from the assistant. I checked the extraction before and after editing by testing the default 11:00-12:00 booking window directly in the local browser development mode
 <!-- If "yes": which change, in which file, and how you checked that the behaviour did not change. -->
 
-**I used another assistant as well (to explain a failure, to draft text in lab-report.md, …):** yes / no
+**I used another assistant as well (to explain a failure, to draft text in lab-report.md, …):** yes / no yes. Claude Sonnet 5.5 for the draft of conclusion
 <!-- If "yes": which one, the exact model, and for which section. -->
 
-**`suites/first/` holds the assistant's first test file exactly as it generated it:** yes / no
+**`suites/first/` holds the assistant's first test file exactly as it generated it:** yes / no yes
 
-**Every terminal output in lab-report.md was pasted from a real run, unedited:** yes / no
+**Every terminal output in lab-report.md was pasted from a real run, unedited:** yes / no yes
 
 **I can explain every test in my final suite — its input, its expected result and the AC behind
-it — without the assistant:** yes / no
+it — without the assistant:** yes / no yes
 
-**Anything I accepted from the AI without fully understanding it:**
+**Anything I accepted from the AI without fully understanding it:** none
 <!-- Name the file and the part. An honest entry here costs far less than a blank one that turns out to be untrue. -->
 
-Signed: <your name>
-Date:
+Signed: Barakhan Akniyet
+Date: 2026-11-6
