@@ -428,18 +428,82 @@ error does not count as detection.
 
 | Trial | Intentional change | Detected / Survived | Failing test ID(s) | If it survived: why, and what you added |
 | --- | --- | --- | --- | --- |
-| M1 | Reject duration >= 120 instead of > 120 | Detected / Survived | | |
-| M2 | Treat touching endpoints as an overlap | Detected / Survived | | |
-| M3 | Remove the blocked-room rejection | Detected / Survived | | |
+| M1 | Reject duration >= 120 instead of > 120 | Detected | T06 | None. The boundary test successfully failed |
+| M2 | Treat touching endpoints as an overlap | Detected | T01, T08, X2, AC5| None. The touching boundaries tests correctly failed |
+| M3 | Remove the blocked-room rejection | Detected | T13 | None. The blocked room test isolated and caught the fault |
 
 **The run of each mutant, pasted unedited.** Paste the `Tests` summary line and the failing test
 names at least:
 
 ```text
-(paste here)
+
+ ❯ booking.test.ts (17)
+   ❯ canBook final verification suite (17)
+     ✓ T02 AC1: starts now (540–570) should be rejected
+     ✓ T03 AC1: zero duration (720–720) should be rejected
+     ✓ T04 AC1: reversed times (750–720) should be rejected
+     ✓ T05 AC1: past the end of the day (1380–1441) should be rejected
+     ✓ X1 AC1: ends exactly at the end of the day (1380–1440) should be accepted
+     × T06 AC2: maximum duration of 120 minutes (720–840) should be accepted
+     ✓ T07 AC2: duration of 121 minutes (720–841) should be rejected
+     ✓ T13 AC3: blocked room is true should reject the request
+     ✓ T01 AC4: touching right after an existing booking (660–720) should be accepted
+     ✓ T08 AC4: touching right before an existing booking (570–600) should be accepted
+     ✓ T09 AC4: partial overlap with a booking (630–690) should be rejected
+     ✓ T10 AC4: request completely covers an existing booking (570–690) should be rejected
+     ✓ T11 AC4: request is completely inside an existing booking (615–645) should be rejected
+     ✓ T12 AC4: request is identical to an existing booking (600–660) should be rejected
+     ✓ T14 AC4: overlap times but the booking list is completely empty should be accepted
+     ✓ X2 AC4: request fits perfectly in the gap between two bookings (660–700) should be accepted
+     ✓ AC5: checking an available room must not change the original bookings data
+
+      RUN  v2.1.9 /Users/akniet/Documents/kbtu/se-practice/week-07/starter/src
+
+ ❯ booking.test.ts (17)
+   ❯ canBook final verification suite (17)
+     ✓ T02 AC1: starts now (540–570) should be rejected
+     ✓ T03 AC1: zero duration (720–720) should be rejected
+     ✓ T04 AC1: reversed times (750–720) should be rejected
+     ✓ T05 AC1: past the end of the day (1380–1441) should be rejected
+     ✓ X1 AC1: ends exactly at the end of the day (1380–1440) should be accepted
+     ✓ T06 AC2: maximum duration of 120 minutes (720–840) should be accepted
+     ✓ T07 AC2: duration of 121 minutes (720–841) should be rejected
+     ✓ T13 AC3: blocked room is true should reject the request
+     × T01 AC4: touching right after an existing booking (660–720) should be accepted
+     × T08 AC4: touching right before an existing booking (570–600) should be accepted
+     ✓ T09 AC4: partial overlap with a booking (630–690) should be rejected
+     ✓ T10 AC4: request completely covers an existing booking (570–690) should be rejected
+     ✓ T11 AC4: request is completely inside an existing booking (615–645) should be rejected
+     ✓ T12 AC4: request is identical to an existing booking (600–660) should be rejected
+     ✓ T14 AC4: overlap times but the booking list is completely empty should be accepted
+     × X2 AC4: request fits perfectly in the gap between two bookings (660–700) should be accepted
+     × AC5: checking an available room must not change the original bookings data
+
+
+ RUN  v2.1.9 /Users/akniet/Documents/kbtu/se-practice/week-07/starter/src
+
+ ❯ booking.test.ts (17)
+   ❯ canBook final verification suite (17)
+     ✓ T02 AC1: starts now (540–570) should be rejected
+     ✓ T03 AC1: zero duration (720–720) should be rejected
+     ✓ T04 AC1: reversed times (750–720) should be rejected
+     ✓ T05 AC1: past the end of the day (1380–1441) should be rejected
+     ✓ X1 AC1: ends exactly at the end of the day (1380–1440) should be accepted
+     ✓ T06 AC2: maximum duration of 120 minutes (720–840) should be accepted
+     ✓ T07 AC2: duration of 121 minutes (720–841) should be rejected
+     × T13 AC3: blocked room is true should reject the request
+     ✓ T01 AC4: touching right after an existing booking (660–720) should be accepted
+     ✓ T08 AC4: touching right before an existing booking (570–600) should be accepted
+     ✓ T09 AC4: partial overlap with a booking (630–690) should be rejected
+     ✓ T10 AC4: request completely covers an existing booking (570–690) should be rejected
+     ✓ T11 AC4: request is completely inside an existing booking (615–645) should be rejected
+     ✓ T12 AC4: request is identical to an existing booking (600–660) should be rejected
+     ✓ T14 AC4: overlap times but the booking list is completely empty should be accepted
+     ✓ X2 AC4: request fits perfectly in the gap between two bookings (660–700) should be accepted
+     ✓ AC5: checking an available room must not change the original bookings data
 ```
 
-All three changes reverted, and the full suite run again (section 6.3): yes / no
+All three changes reverted, and the full suite run again (section 6.3): yes / no yes
 
 ---
 
@@ -451,11 +515,11 @@ screenshot of each as `evidence/ui-1.png` … `evidence/ui-5.png`. Take **ui-4 a
 
 | # | Action | Expected observation | AC | What I observed | Pass / Fail / Not testable |
 | --- | --- | --- | --- | --- | --- |
-| U1 | Check 11:00–12:00, unblocked | Available, with the fixed sample booking | AC5 | | Pass / Fail / Not testable |
-| U2 | Enable blocked, then check again | Unavailable replaces the earlier result | AC3, AC5 | | Pass / Fail / Not testable |
-| U3 | Clear a required input and submit | Understandable validation feedback | AC6 | | Pass / Fail / Not testable |
-| U4 | Use a narrow (phone) width | Controls and result remain usable | AC6 | | Pass / Fail / Not testable |
-| U5 | Repeat the checks on the same data | Existing bookings remain unchanged | AC5 | | Pass / Fail / Not testable |
+| U1 | Check 11:00–12:00, unblocked | Available, with the fixed sample booking | AC5 | The page displayed the "available"| Pass |
+| U2 | Enable blocked, then check again | Unavailable replaces the earlier result | AC3, AC5 | After clicking the "blocked" button and testing, the page showed "Unavailable"| Pass |
+| U3 | Clear a required input and submit | Understandable validation feedback | AC6 | Clearing the all inputs showed the meassage "Fill in the current time, the start and the end.", which is a understandable feedback | Pass |
+| U4 | Use a narrow (phone) width | Controls and result remain usable | AC6 | The layout is correct. The text and buttons stayed fully viewable and clickable | Pass |
+| U5 | Repeat the checks on the same data | Existing bookings remain unchanged | AC5 | Submitting multiple validation checks repeatedly did not add any duplicate items or change the existing 10:00-11:00 booking block | Pass |
 
 ---
 
