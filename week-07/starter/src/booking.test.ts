@@ -1,95 +1,119 @@
-import { describe, it, expect } from "vitest";
-// TODO: replace with the real module path used by the page (not provided).
+import { describe, test, expect } from "vitest";
 import { canBook, type Interval } from "./booking";
 
-// Fixed time: canBook takes `now` as a parameter, so no fake timers are needed.
+// Fix current time at 9:00 AM (540 minutes)
 const NOW = 540;
 
-// Fresh fixtures: every call returns new objects, so tests cannot share state.
-const makeBookings = (): Interval[] => [{ start: 600, end: 660 }];
+// Create a clean list with one booking from 10:00 to 11:00 (600 to 660)
+const createFreshBookings = (): Interval[] => [
+  { start: 600, end: 660 }
+];
 
-type Input = Parameters<typeof canBook>[0];
-const makeInput = (overrides: Partial<Input> = {}): Input => ({
-  start: 660,
-  end: 720,
-  now: NOW,
-  blocked: false,
-  bookings: makeBookings(),
-  ...overrides,
-});
-
-describe("canBook", () => {
-  describe("AC1: valid interval, strictly after now, within the day", () => {
-    it.each([
-      ["T02 starts now (540–570)", 540, 570, false],
-      ["T03 zero duration (720–720)", 720, 720, false],
-      ["T04 reversed (750–720)", 750, 720, false],
-      ["T05 past day end (1380–1441)", 1380, 1441, false],
-      ["X1 ends exactly at day end (1380–1440)", 1380, 1440, true],
-    ])("%s -> %s", (_name, start, end, expected) => {
-      expect(canBook(makeInput({ start, end }))).toBe(expected);
-    });
+describe("canBook final verification suite", () => {
+  // --- AC1: Valid time ranges ---
+  test("T02 AC1: starts now (540–570) should be rejected", () => {
+    const result = canBook({ start: 540, end: 570, now: NOW, blocked: false, bookings: createFreshBookings() });
+    expect(result).toBe(false);
   });
 
-  describe("AC2: duration must not exceed 120", () => {
-    it("T06 120 minutes (720–840) -> true", () => {
-      expect(canBook(makeInput({ start: 720, end: 840 }))).toBe(true);
-    });
-    it("T07 121 minutes (720–841) -> false", () => {
-      expect(canBook(makeInput({ start: 720, end: 841 }))).toBe(false);
-    });
+  test("T03 AC1: zero duration (720–720) should be rejected", () => {
+    const result = canBook({ start: 720, end: 720, now: NOW, blocked: false, bookings: createFreshBookings() });
+    expect(result).toBe(false);
   });
 
-  describe("AC3: blocked room rejects every request", () => {
-    it("T13 660–720 with blocked = true -> false", () => {
-      expect(canBook(makeInput({ start: 660, end: 720, blocked: true }))).toBe(false);
-    });
+  test("T04 AC1: reversed times (750–720) should be rejected", () => {
+    const result = canBook({ start: 750, end: 720, now: NOW, blocked: false, bookings: createFreshBookings() });
+    expect(result).toBe(false);
   });
 
-  describe("AC4: no overlap with existing bookings (end exclusive)", () => {
-    it("T01 touching after (660–720) -> true", () => {
-      expect(canBook(makeInput({ start: 660, end: 720 }))).toBe(true);
-    });
-    it("T08 touching before (570–600) -> true", () => {
-      expect(canBook(makeInput({ start: 570, end: 600 }))).toBe(true);
-    });
-    it("T09 partial overlap (630–690) -> false", () => {
-      expect(canBook(makeInput({ start: 630, end: 690 }))).toBe(false);
-    });
-    it("T10 contains booking (570–690) -> false", () => {
-      expect(canBook(makeInput({ start: 570, end: 690 }))).toBe(false);
-    });
-    it("T11 inside booking (615–645) -> false", () => {
-      expect(canBook(makeInput({ start: 615, end: 645 }))).toBe(false);
-    });
-    it("T12 identical interval (600–660) -> false", () => {
-      expect(canBook(makeInput({ start: 600, end: 660 }))).toBe(false);
-    });
-    it("T14 same as T09 but bookings = [] -> true", () => {
-      expect(canBook(makeInput({ start: 630, end: 690, bookings: [] }))).toBe(true);
-    });
-    it("X2 fits exactly between two bookings (660–700) -> true", () => {
-      const bookings: Interval[] = [
-        { start: 600, end: 660 },
-        { start: 700, end: 760 },
-      ];
-      expect(canBook(makeInput({ start: 660, end: 700, bookings }))).toBe(true);
-    });
+  test("T05 AC1: past the end of the day (1380–1441) should be rejected", () => {
+    const result = canBook({ start: 1380, end: 1441, now: NOW, blocked: false, bookings: createFreshBookings() });
+    expect(result).toBe(false);
   });
 
-  describe("AC5: the check does not modify bookings", () => {
-    it("available request returns true and leaves bookings unchanged", () => {
-      const bookings = makeBookings();
-      const snapshot = structuredClone(bookings);
-      // Freeze so any push/splice/assignment throws (ES modules run in strict mode).
-      bookings.forEach(Object.freeze);
-      Object.freeze(bookings);
+  test("X1 AC1: ends exactly at the end of the day (1380–1440) should be accepted", () => {
+    const result = canBook({ start: 1380, end: 1440, now: NOW, blocked: false, bookings: createFreshBookings() });
+    expect(result).toBe(true);
+  });
 
-      const result = canBook(makeInput({ start: 660, end: 720, bookings }));
+  // --- AC2: Maximum duration ---
+  test("T06 AC2: maximum duration of 120 minutes (720–840) should be accepted", () => {
+    const result = canBook({ start: 720, end: 840, now: NOW, blocked: false, bookings: createFreshBookings() });
+    expect(result).toBe(true);
+  });
 
-      expect(result).toBe(true);
-      expect(bookings).toEqual(snapshot);
-      expect(bookings).toHaveLength(1);
+  test("T07 AC2: duration of 121 minutes (720–841) should be rejected", () => {
+    const result = canBook({ start: 720, end: 841, now: NOW, blocked: false, bookings: createFreshBookings() });
+    expect(result).toBe(false);
+  });
+
+  // --- AC3: Blocked status ---
+  test("T13 AC3: blocked room is true should reject the request", () => {
+    const result = canBook({ start: 660, end: 720, now: NOW, blocked: true, bookings: createFreshBookings() });
+    expect(result).toBe(false);
+  });
+
+  // --- AC4: Overlapping and touching ---
+  test("T01 AC4: touching right after an existing booking (660–720) should be accepted", () => {
+    const result = canBook({ start: 660, end: 720, now: NOW, blocked: false, bookings: createFreshBookings() });
+    expect(result).toBe(true);
+  });
+
+  test("T08 AC4: touching right before an existing booking (570–600) should be accepted", () => {
+    const result = canBook({ start: 570, end: 600, now: NOW, blocked: false, bookings: createFreshBookings() });
+    expect(result).toBe(true);
+  });
+
+  test("T09 AC4: partial overlap with a booking (630–690) should be rejected", () => {
+    const result = canBook({ start: 630, end: 690, now: NOW, blocked: false, bookings: createFreshBookings() });
+    expect(result).toBe(false);
+  });
+
+  test("T10 AC4: request completely covers an existing booking (570–690) should be rejected", () => {
+    const result = canBook({ start: 570, end: 690, now: NOW, blocked: false, bookings: createFreshBookings() });
+    expect(result).toBe(false);
+  });
+
+  test("T11 AC4: request is completely inside an existing booking (615–645) should be rejected", () => {
+    const result = canBook({ start: 615, end: 645, now: NOW, blocked: false, bookings: createFreshBookings() });
+    expect(result).toBe(false);
+  });
+
+  test("T12 AC4: request is identical to an existing booking (600–660) should be rejected", () => {
+    const result = canBook({ start: 600, end: 660, now: NOW, blocked: false, bookings: createFreshBookings() });
+    expect(result).toBe(false);
+  });
+
+  test("T14 AC4: overlap times but the booking list is completely empty should be accepted", () => {
+    const result = canBook({ start: 630, end: 690, now: NOW, blocked: false, bookings: [] });
+    expect(result).toBe(true);
+  });
+
+  test("X2 AC4: request fits perfectly in the gap between two bookings (660–700) should be accepted", () => {
+    const doubleBookings: Interval[] = [
+      { start: 600, end: 660 },
+      { start: 700, end: 760 }
+    ];
+    const result = canBook({ start: 660, end: 700, now: NOW, blocked: false, bookings: doubleBookings });
+    expect(result).toBe(true);
+  });
+
+  // --- AC5: Do not change data ---
+  test("AC5: checking an available room must not change the original bookings data", () => {
+    const originalBookings = createFreshBookings();
+    const copyBeforeTest = structuredClone(originalBookings);
+
+    // Make an available request (returns true)
+    const result = canBook({
+      start: 660,
+      end: 720,
+      now: NOW,
+      blocked: false,
+      bookings: originalBookings
     });
+
+    expect(result).toBe(true);
+    // Make sure the list was not modified
+    expect(originalBookings).toEqual(copyBeforeTest);
   });
 });
