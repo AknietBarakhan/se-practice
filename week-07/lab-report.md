@@ -531,17 +531,17 @@ Use the same IDs as `known_fails` in `submission.yml`. Write `none` if the run i
 
 | Check | Why it stays |
 | --- | --- |
-| | |
+| none | All tests passed successfully |
 
 ### 9.2 Original and improved suites
 
 | Measure | First suite | Improved suite |
 | --- | --- | --- |
-| Executed / passed / failed | | |
-| Requirements with meaningful tests (AC IDs and gaps) | | |
-| Selected mutants detected | | |
-| Accepted / revised / rejected tests | | |
-| Remaining limitations | | |
+| Executed / passed / failed | 17 / 17 / 0 | 17 / 17 / 0 |
+| Requirements with meaningful tests (AC IDs and gaps) | Covered AC1–AC5 with loops and missed AC6 entirely | Covered AC1–M5 individually and closed the AC6 UI gap |
+| Selected mutants detected | M1, M2, M3 were implicitly caught | M1, M2, M3 explicitly failed isolated blocks |
+| Accepted / revised / rejected tests | 0 accepted / 17 revised / 0 rejected | 17 accepted / 0 revised / 0 rejected |
+| Remaining limitations | Hides parameters inside a loop macro | Cannot detect server-side or live state mutations |
 
 ### 9.3 What no AC decides
 
@@ -549,7 +549,7 @@ Call your function with `bookings = [{ start: 700, end: 650 }]` (a reversed exis
 and a request of 660–720. What does it return? Does any AC say what it should return? (This is
 the value you declare in `submission.yml` under `assumptions.invalid_existing_booking`.)
 
--
+-It returns `true`. The overlapping loop check condition `(start < b.end && end > b.start)` evaluates to `(660 < 650 && 720 > 700)`, which is `false && true`, so it skips the block and treats it as available. No AC explicitly states how to handle invalid or corrupted historical data structures inside the existing booking array
 
 ---
 
@@ -565,3 +565,5 @@ the value you declare in `submission.yml` under `assumptions.invalid_existing_bo
      pass, M1 would have become the real behaviour." -->
 
 <!-- Write your conclusion below this line -->
+The original test suite contained a critical macro configuration error within the parameterized loop structure. The test titles printed raw boundary numeric minute variables instead of evaluating boolean results. This defect masked an off-by-one boundary validation discrepancy under AC1 that could allow an invalid request to pass undetected. I discovered this issue by reviewing the unedited console log format shapes and verifying the title string structures. 
+The finalized green test execution run successfully proves that the standalone unit logic matches the acceptance criteria under static conditions. However, it does not guarantee that the interactive front-end handles empty fields or responsive phone widths cleanly. This limitation was proven by the manual UI layout checks, where browser-level HTML5 tooltip validation handled empty inputs independently of the unit code. One remaining testing limitation is that the suite relies entirely on static, pre-configured data snapshots, meaning it cannot detect real-time race conditions or simultaneous double-booking state updates.
