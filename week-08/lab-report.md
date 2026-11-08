@@ -30,7 +30,32 @@ The **real** output of your Week 07 suite, run in `week-08/app/` **before** you 
 anything. It should be green. If it is not, say why under the block.
 
 ```text
-(paste here)
+ RUN  v2.1.9 /Users/akniet/Documents/kbtu/se-practice/week-08/app
+
+ ✓ src/booking.test.ts (17)
+   ✓ canBook final verification suite (17)
+     ✓ T02 AC1: starts now (540–570) should be rejected
+     ✓ T03 AC1: zero duration (720–720) should be rejected
+     ✓ T04 AC1: reversed times (750–720) should be rejected
+     ✓ T05 AC1: past the end of the day (1380–1441) should be rejected
+     ✓ X1 AC1: ends exactly at the end of the day (1380–1440) should be accepted
+     ✓ T06 AC2: maximum duration of 120 minutes (720–840) should be accepted
+     ✓ T07 AC2: duration of 121 minutes (720–841) should be rejected
+     ✓ T13 AC3: blocked room is true should reject the request
+     ✓ T01 AC4: touching right after an existing booking (660–720) should be accepted
+     ✓ T08 AC4: touching right before an existing booking (570–600) should be accepted
+     ✓ T09 AC4: partial overlap with a booking (630–690) should be rejected
+     ✓ T10 AC4: request completely covers an existing booking (570–690) should be rejected
+     ✓ T11 AC4: request is completely inside an existing booking (615–645) should be rejected
+     ✓ T12 AC4: request is identical to an existing booking (600–660) should be rejected
+     ✓ T14 AC4: overlap times but the booking list is completely empty should be accepted
+     ✓ X2 AC4: request fits perfectly in the gap between two bookings (660–700) should be accepted
+     ✓ AC5: checking an available room must not change the original bookings data
+
+ Test Files  1 passed (1)
+      Tests  17 passed (17)
+   Start at  20:30:12
+   Duration  131ms (transform 14ms, setup 0ms, collect 12ms, tests 1ms, environment 0ms, prepare 27ms)
 ```
 
 ### 2.2 The same suite on the provided canBook
