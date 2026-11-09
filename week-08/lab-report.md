@@ -177,7 +177,150 @@ Run them **on the buggy code**. Both must fail here. That is the evidence that e
 its bug.
 
 ```text
-(paste here)
+ RUN  v2.1.9 /Users/akniet/Documents/kbtu/se-practice/week-08/app
+
+ ❯ src/booking.test.ts (19)
+   ❯ canBook final verification suite (19)
+     × BUG-A: touching booking should be available
+     × BUG-B: canBook does not mutate bookings array
+     ✓ T02 AC1: starts now (540–570) should be rejected
+     ✓ T03 AC1: zero duration (720–720) should be rejected
+     ✓ T04 AC1: reversed times (750–720) should be rejected
+     ✓ T05 AC1: past the end of the day (1380–1441) should be rejected
+     ✓ X1 AC1: ends exactly at the end of the day (1380–1440) should be accepted
+     ✓ T06 AC2: maximum duration of 120 minutes (720–840) should be accepted
+     ✓ T07 AC2: duration of 121 minutes (720–841) should be rejected
+     ✓ T13 AC3: blocked room is true should reject the request
+     × T01 AC4: touching right after an existing booking (660–720) should be accepted
+     × T08 AC4: touching right before an existing booking (570–600) should be accepted
+     ✓ T09 AC4: partial overlap with a booking (630–690) should be rejected
+     ✓ T10 AC4: request completely covers an existing booking (570–690) should be rejected
+     ✓ T11 AC4: request is completely inside an existing booking (615–645) should be rejected
+     ✓ T12 AC4: request is identical to an existing booking (600–660) should be rejected
+     ✓ T14 AC4: overlap times but the booking list is completely empty should be accepted
+     × X2 AC4: request fits perfectly in the gap between two bookings (660–700) should be accepted
+     × AC5: checking an available room must not change the original bookings data
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯ Failed Tests 6 ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/booking.test.ts > canBook final verification suite > BUG-A: touching booking should be available
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ src/booking.test.ts:16:83
+     14|   test('BUG-A: touching booking should be available', () => {
+     15|     const bookings = [{ start: 600, end: 660 }];
+     16|     expect(canBook({ start: 660, end: 720, now: 540, blocked: false, bookings })).toBe(true);
+       |                                                                                   ^
+     17|   });
+     18| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/6]⎯
+
+ FAIL  src/booking.test.ts > canBook final verification suite > BUG-B: canBook does not mutate bookings array
+AssertionError: expected 2 to be 1 // Object.is equality
+
+- Expected
++ Received
+
+- 1
++ 2
+
+ ❯ src/booking.test.ts:25:29
+     23|     canBook({ start: 720, end: 780, now: 540, blocked: false, bookings });
+     24|     
+     25|     expect(bookings.length).toBe(initialLength);
+       |                             ^
+     26|   });
+     27| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/6]⎯
+
+ FAIL  src/booking.test.ts > canBook final verification suite > T01 AC4: touching right after an existing booking (660–720) should be accepted
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ src/booking.test.ts:73:20
+     71|   test("T01 AC4: touching right after an existing booking (660–720) should be accepted", () => {
+     72|     const result = canBook({ start: 660, end: 720, now: NOW, blocked: false, bookings: createFreshBookings() });
+     73|     expect(result).toBe(true);
+       |                    ^
+     74|   });
+     75| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/6]⎯
+
+ FAIL  src/booking.test.ts > canBook final verification suite > T08 AC4: touching right before an existing booking (570–600) should be accepted
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ src/booking.test.ts:78:20
+     76|   test("T08 AC4: touching right before an existing booking (570–600) should be accepted", () => {
+     77|     const result = canBook({ start: 570, end: 600, now: NOW, blocked: false, bookings: createFreshBookings() });
+     78|     expect(result).toBe(true);
+       |                    ^
+     79|   });
+     80| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/6]⎯
+
+ FAIL  src/booking.test.ts > canBook final verification suite > X2 AC4: request fits perfectly in the gap between two bookings (660–700) should be accepted
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ src/booking.test.ts:112:20
+    110|     ];
+    111|     const result = canBook({ start: 660, end: 700, now: NOW, blocked: false, bookings: doubleBookings });
+    112|     expect(result).toBe(true);
+       |                    ^
+    113|   });
+    114| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/6]⎯
+
+ FAIL  src/booking.test.ts > canBook final verification suite > AC5: checking an available room must not change the original bookings data
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ src/booking.test.ts:129:20
+    127|     });
+    128| 
+    129|     expect(result).toBe(true);
+       |                    ^
+    130|     // Make sure the list was not modified
+    131|     expect(originalBookings).toEqual(copyBeforeTest);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/6]⎯
+
+ Test Files  1 failed (1)
+      Tests  6 failed | 13 passed (19)
+   Start at  16:23:46
+   Duration  158ms (transform 18ms, setup 0ms, collect 13ms, tests 4ms, environment 0ms, prepare 32ms)
 ```
 
 ---

@@ -2,7 +2,7 @@
 
 **Name:** Barakhan Akniyet
 **Group:** Monday 16:00-19:00
-**Date:**
+**Date:** 2026-11-6
 
 Fill in every section. **Do not delete, rename or renumber the headings.** The checker and the
 grader find your answers by them. You can add rows to any table, but never remove its header.
@@ -18,7 +18,7 @@ grader find your answers by them. You can add rows to any table, but never remov
 | Assistant that generated the tests (tool) | Claude |
 | Exact model (with its version, or `not displayed`) | Sonnet 5.5 |
 | Where I ran the tests (Bolt terminal / my computer / Codespace) | my computer |
-| Vitest version (the `RUN  v…` line of a run) | v5.1.0|
+| Vitest version (the `RUN  v…` line of a run) | v5.1.0 |
 | Test command | npm test |
 
 ---
