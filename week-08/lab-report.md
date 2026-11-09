@@ -64,7 +64,110 @@ You copied the whole `canBook` function from `buggy/booking.ts` (or `.js`) over 
 nothing else. This is the real output:
 
 ```text
-(paste here)
+ RUN  v2.1.9 /Users/akniet/Documents/kbtu/se-practice/week-08/app
+
+ ❯ src/booking.test.ts (17)
+   ❯ canBook final verification suite (17)
+     ✓ T02 AC1: starts now (540–570) should be rejected
+     ✓ T03 AC1: zero duration (720–720) should be rejected
+     ✓ T04 AC1: reversed times (750–720) should be rejected
+     ✓ T05 AC1: past the end of the day (1380–1441) should be rejected
+     ✓ X1 AC1: ends exactly at the end of the day (1380–1440) should be accepted
+     ✓ T06 AC2: maximum duration of 120 minutes (720–840) should be accepted
+     ✓ T07 AC2: duration of 121 minutes (720–841) should be rejected
+     ✓ T13 AC3: blocked room is true should reject the request
+     × T01 AC4: touching right after an existing booking (660–720) should be accepted
+     × T08 AC4: touching right before an existing booking (570–600) should be accepted
+     ✓ T09 AC4: partial overlap with a booking (630–690) should be rejected
+     ✓ T10 AC4: request completely covers an existing booking (570–690) should be rejected
+     ✓ T11 AC4: request is completely inside an existing booking (615–645) should be rejected
+     ✓ T12 AC4: request is identical to an existing booking (600–660) should be rejected
+     ✓ T14 AC4: overlap times but the booking list is completely empty should be accepted
+     × X2 AC4: request fits perfectly in the gap between two bookings (660–700) should be accepted
+     × AC5: checking an available room must not change the original bookings data
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/booking.test.ts > canBook final verification suite > T01 AC4: touching right after an existing booking (660–720) should be accepted
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ src/booking.test.ts:59:20
+     57|   test("T01 AC4: touching right after an existing booking (660–720) should be accepted", () => {
+     58|     const result = canBook({ start: 660, end: 720, now: NOW, blocked: false, bookings: createFreshBookings() });
+     59|     expect(result).toBe(true);
+       |                    ^
+     60|   });
+     61| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/4]⎯
+
+ FAIL  src/booking.test.ts > canBook final verification suite > T08 AC4: touching right before an existing booking (570–600) should be accepted
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ src/booking.test.ts:64:20
+     62|   test("T08 AC4: touching right before an existing booking (570–600) should be accepted", () => {
+     63|     const result = canBook({ start: 570, end: 600, now: NOW, blocked: false, bookings: createFreshBookings() });
+     64|     expect(result).toBe(true);
+       |                    ^
+     65|   });
+     66| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/4]⎯
+
+ FAIL  src/booking.test.ts > canBook final verification suite > X2 AC4: request fits perfectly in the gap between two bookings (660–700) should be accepted
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ src/booking.test.ts:98:20
+     96|     ];
+     97|     const result = canBook({ start: 660, end: 700, now: NOW, blocked: false, bookings: doubleBookings });
+     98|     expect(result).toBe(true);
+       |                    ^
+     99|   });
+    100| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/4]⎯
+
+ FAIL  src/booking.test.ts > canBook final verification suite > AC5: checking an available room must not change the original bookings data
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ src/booking.test.ts:115:20
+    113|     });
+    114| 
+    115|     expect(result).toBe(true);
+       |                    ^
+    116|     // Make sure the list was not modified
+    117|     expect(originalBookings).toEqual(copyBeforeTest);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/4]⎯
+
+ Test Files  1 failed (1)
+      Tests  4 failed | 13 passed (17)
+   Start at  16:14:18
+   Duration  161ms (transform 20ms, setup 0ms, collect 13ms, tests 4ms, environment 0ms, prepare 33ms)
 ```
 
 ### 2.3 One failing test per bug

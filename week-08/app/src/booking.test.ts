@@ -11,6 +11,20 @@ const createFreshBookings = (): Interval[] => [
 
 describe("canBook final verification suite", () => {
   // --- AC1: Valid time ranges ---
+  test('BUG-A: touching booking should be available', () => {
+    const bookings = [{ start: 600, end: 660 }];
+    expect(canBook({ start: 660, end: 720, now: 540, blocked: false, bookings })).toBe(true);
+  });
+
+  test('BUG-B: canBook does not mutate bookings array', () => {
+    const bookings = [{ start: 600, end: 660 }];
+    const initialLength = bookings.length;
+    
+    canBook({ start: 720, end: 780, now: 540, blocked: false, bookings });
+    
+    expect(bookings.length).toBe(initialLength);
+  });
+
   test("T02 AC1: starts now (540–570) should be rejected", () => {
     const result = canBook({ start: 540, end: 570, now: NOW, blocked: false, bookings: createFreshBookings() });
     expect(result).toBe(false);
