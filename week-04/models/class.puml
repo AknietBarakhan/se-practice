@@ -1,0 +1,76 @@
+@startuml
+skinparam shadowing false
+skinparam classAttributeIconSize 0
+hide enum methods
+
+class Student {
+  - studentId : String
+  - name : String
+  + bookRoom(room : Room, start : DateTime, durationMinutes : int) : Booking
+  + cancelBooking(booking : Booking) : void
+}
+
+class Administrator {
+  + blockRoom(room : Room) : void
+  + unblockRoom(room : Room) : void
+  + reviewUsage(from : DateTime, to : DateTime) : List<Booking>
+}
+
+class Room {
+  - roomId : String
+  - name : String
+  - blocked : boolean
+  + isBlocked() : boolean
+  + block() : void
+  + unblock() : void
+  + isFreeFor(start : DateTime, durationMinutes : int) : boolean
+}
+
+class Booking {
+  - bookingId : String
+  - startTime : DateTime
+  - durationMinutes : int
+  - status : BookingStatus
+  + /endTime : DateTime
+  + isActive() : boolean
+  + overlaps(other : Booking) : boolean
+  + isValidRequest(now : DateTime) : boolean
+  + cancel() : void
+}
+
+class Confirmation {
+  - issuedAt : DateTime
+  - type : ConfirmationType
+}
+
+enum BookingStatus {
+  ACTIVE
+  CANCELLED
+}
+
+enum ConfirmationType {
+  BOOKING
+}
+
+Student "1" -- "0..*" Booking : makes >
+Room "1" -- "0..*" Booking : is reserved by >
+Booking "1" -- "1" Confirmation : produces >
+Booking --> BookingStatus
+Confirmation --> ConfirmationType
+
+note bottom of Booking
+  R1: isValidRequest() checks future start,
+      duration > 0 and <= 120 minutes
+  R2: overlaps() is used only between ACTIVE
+      bookings of the same Room
+end note
+
+note bottom of Room
+  R3: blocked room cannot accept a new booking
+  (US-05: block() / unblock())
+end note
+
+note bottom of Confirmation
+  R4: issued once, for a successful booking only
+end note
+@enduml
