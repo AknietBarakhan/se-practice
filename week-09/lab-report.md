@@ -132,7 +132,17 @@ Missing information: the exact start and end, the current time, whether the room
 
 <!-- Name the acceptance criteria (AC1-AC6, README section 3) that a JSON Schema with the allowed keywords cannot
      enforce, and say why for each. At least two, by their AC number. Which part of AC1 CAN the schema enforce? -->
+**AC1 (start strictly after now).** The schema can enforce only the shape of AC1: `start`, `end` and `now` must be integers, and each must stay inside the range 0 to 1440 (`minimum` and `maximum`). It cannot compare two fields with each other. Whether `start` is greater than `now`, or `start` is less than `end`, depends on the values of two different arguments, and the allowed keywords look at one value at a time. A call with `start` 540 and `now` 540 passes the schema and must be rejected by `canBook`.
 
+**AC2 (duration at most 120 minutes).** Duration is `end - start`, a calculation between two fields. The schema has no keyword that subtracts values, so a request from 600 to 900 (300 minutes) is valid for the schema and is rejected only by the function.
+
+**AC3 (reject a blocked room).** The schema can check that `blocked` is a boolean, but it cannot enforce the rule "if `blocked` is true, the answer is Unavailable". A schema describes valid inputs, not decisions. A call with `blocked: true` is a perfectly valid call, and R2 shows this: the model made the call correctly, and `canBook` decides.
+
+**AC4 (no overlap, touching is allowed).** The schema can check that each booking has an integer `start` and `end` within the day, but it cannot compare the requested interval with the existing bookings, because that needs comparisons between the request and every item in `bookings`. R1 is a valid call whose request touches a booking, and only the function can tell that it does not overlap.
+
+**AC5 (the result is Available or Unavailable, and the bookings are not changed).** This concerns the output and the behaviour of the function, and the input schema describes only the arguments. It cannot say anything about what the tool returns or whether it modifies the data.
+
+**The part of AC1 that the schema can enforce:** the unit and the range. Times must be whole minutes (`"type": "integer"`), `start` from 0 to 1439 and `end` from 1 to 1440, which is why S03 (a string), S06 (-30), S07 (1500) and S10 (600.5) were refused. Everything that relates one value to another stays with `canBook`.
 ## 6. Permissions — allow, ask or block
 
 | # | Action | Decision (allow / ask / block) | Reason (the risk, in one sentence or more) |
