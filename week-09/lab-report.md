@@ -160,7 +160,12 @@ Missing information: the exact start and end, the current time, whether the room
 
 <!-- The commit you would make before letting such an agent edit anything: its real SHA (git log --oneline),
      the exact command that returns you to it, and what that command would throw away. -->
+Before letting an agent edit anything, I would commit my current work as `week-09: permission decisions`, which is commit `42a0201`. That commit holds a clean, reviewed state of the worksheet, the tool definition and the calls, so I could always return to it.
 
+The command that returns me to it is:
+`git reset --hard 42a0201`
+
+This command would throw away every uncommitted change in my working directory, and every commit I made on the `week-09` branch after the checkpoint, including any edits the agent made. Because it cannot be undone easily, I would first run `git status` and `git log` to see what would be lost, and copy anything I want to keep.
 ## 8. Checker output
 
 Paste the **whole** output of your last `python tests/check_tool.py`, unedited.
