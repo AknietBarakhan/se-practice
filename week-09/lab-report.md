@@ -147,14 +147,14 @@ Missing information: the exact start and end, the current time, whether the room
 
 | # | Action | Decision (allow / ask / block) | Reason (the risk, in one sentence or more) |
 | --- | --- | --- | --- |
-| A1 | call `check_room` with the times the user just typed | | |
-| A2 | read `week-08/app/src/booking.ts` | | |
-| A3 | edit `booking.ts` to raise the 120-minute limit to 180 | | |
-| A4 | run `npm test` in `week-08/app` | | |
-| A5 | run `git reset --hard` to undo its own last three edits | | |
-| A6 | `git commit` its change on the `week-09` branch | | |
-| A7 | `git push` to `main` | | |
-| A8 | send the contents of `.env` to an MCP server it found online | | |
+| A1 | call `check_room` with the times the user just typed | allow | The tool only checks and never saves or changes a booking, and its schema refuses malformed input, so the worst outcome is a wrong answer I can see |
+| A2 | read `week-08/app/src/booking.ts` | allow | Reading changes nothing, and the file holds no secrets, only the booking rules |
+| A3 | edit `booking.ts` to raise the 120-minute limit to 180 | block | The 120-minute limit is a fixed acceptance criterion (AC2), so a user's request does not give the agent the right to change the requirements; the change belongs to a human decision |
+| A4 | run `npm test` in `week-08/app` | allow | It runs local tests that read the code and report results, with no effect on the repository or on other systems, and it gives me evidence about the current state |
+| A5 | run `git reset --hard` to undo its own last three edits | ask | The command discards uncommitted work permanently, including any of mine that is mixed in, so I want to see what would be lost before it runs |
+| A6 | `git commit` its change on the `week-09` branch | ask | A commit on a feature branch is easy to undo, but I want to review the diff first so I know what I am signing under my name |
+| A7 | `git push` to `main` | block | `main` is the shared branch, and pushing to it publishes unreviewed changes that others will pull; a push is hard to take back and should go through a pull request |
+| A8 | send the contents of `.env` to an MCP server it found online | block | `.env` holds secrets such as keys and tokens, and sending them to an unknown server leaks them; "to configure it" is exactly the kind of reason a malicious server would give |
 
 ## 7. Checkpoint
 
