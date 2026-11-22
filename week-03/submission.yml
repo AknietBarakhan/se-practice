@@ -1,0 +1,38 @@
+schema: 1
+week: "03"
+
+student:
+  name: Barakhan Akniyet
+  student_id: 24B031687
+  github: AknietBarakhan
+
+assistant:
+  tool: Claude Free
+  model: Claude Sonnet 4.5
+
+counts:
+  user_stories: 6
+  acceptance_criteria_sets: 3
+
+checker:
+  pass:
+  fail:
+  error: 0
+  commit:
+
+assumptions:
+  overlap_touching_bookings: not-allowed
+  exactly_two_hours: allowed
+
+traceability:
+  use_cases_not_covered: [UC-01, UC-05, UC-06]
+  stories_not_traced: []
+
+review_findings:
+  - "US-01 originally included a room-capacity filter that the AI added; UC-01 only covers which rooms are free and when, so capacity was never part of the scenario."
+  - "A draft story for UC-04 described blocking a student for no-shows, which the out-of-scope list excludes (payments, fees, fines, penalties, and check-in/attendance); it was rewritten into US-05."
+  - "AC-12 and AC-13 originally described two incompatible outcomes in one Then clause ('rejects the action or returns a no-op confirmation'); each was rewritten to one observable result."
+
+honesty:
+  can_explain_everything_submitted: yes
+  ai_usage_disclosed: yes
