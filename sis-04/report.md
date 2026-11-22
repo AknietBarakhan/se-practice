@@ -157,8 +157,11 @@ Identify the key maintainability risks in my current codebase (referencing speci
 
 <!-- Short: the catalog (how many rooms, which equipment), how the filter is chosen on the page,
      what the empty state says, what happens to an old result when the room changes. -->
+Room catalog (src/rooms.ts): Added the Room type and ROOMS array with 4 fictional rooms (Room 101 — Study Pod cap 4, Room 202 — Seminar Room cap 12, Room 305 — Lecture Lab cap 30, and blocked Room 404 — Maintenance Hall cap 20) using equipment tags "projector", "whiteboard", and "video-conference".
+Filtering (src/filter.ts): Added filterRooms(rooms, { attendees, equipment }), which keeps rooms with capacity >= attendees (F1) that include every selected equipment item (F2).
+Room-level check (src/booking.ts): Added checkRoom(rooms, roomId, request) to look up the chosen room and call canBook() with that room's own blocked status and bookings array (returning false for unknown IDs or blocked rooms, F3).
+UI controls & state (src/App.tsx): Added a number input for minimum attendees, checkboxes for equipment filters (projector, whiteboard, video-conference), and a room selector showing matching rooms. When filters leave zero matches, an empty-state message ("No rooms match the selected capacity and equipment requirements.") replaces the selector and disables checking (F4). Changing the selected room or filter criteria immediately clears/refreshes the displayed availability result so stale results never remain on screen (F5).
 
-(write here)
 
 ### 4.2 Demonstration
 
@@ -167,11 +170,13 @@ Identify the key maintainability risks in my current codebase (referencing speci
 
 | Screenshot | What it shows |
 | --- | --- |
-| `evidence/filter-match.png` | (write here) |
-| `evidence/filter-empty.png` | (write here) |
-| `evidence/switch-a.png` | (write here) |
-| `evidence/switch-b.png` | (write here) |
-| `evidence/narrow.png` | (write here) |
+| `evidence/filter-match.png` | Filter set to 10 attendees and projector checked; only matching rooms (Room 202 — Seminar Room, Room 305 — Lecture Lab, and Room 404 — Maintenance Hall) appear in the room list, while Room 101 (capacity 4, no projector) is excluded. |
+| `evidence/filter-empty.png` | Filter set to 50 attendees with projector and video-conference checked; zero rooms match and the empty-state message ("No rooms match the selected capacity and equipment requirements.") is displayed (F4). |
+| `evidence/switch-a.png` | Room 101 — Study Pod selected with time 10:00–10:30 (600–630, now = 540), showing Unavailable because Room 101 has an existing booking from 10:00–11:00. |
+| `evidence/switch-b.png` | With the same time (10:00–10:30) still entered, switching selection to Room 202 — Seminar Room refreshes the result and shows Available because Room 202 is free during that slot (F5). |
+| `evidence/narrow.png` | 
+	Mobile portrait viewport (375×812) showing stacked filter controls, room selector, time inputs, and clear availability feedback without horizontal overflow (AC6).
+ |
 
 ## 5. Refactoring (Task 3)
 
@@ -181,10 +186,10 @@ Identify the key maintainability risks in my current codebase (referencing speci
 
 | Module or component | Responsibility |
 | --- | --- |
-| `src/rooms.ts` | (write here) |
-| `src/booking.ts` | (write here) |
-| `src/filter.ts` | (write here) |
-| (write here) | (write here) |
+| `src/rooms.ts` | Defines the `Room` type and exports the fictional `ROOMS` catalog (4 rooms with ID, name, capacity, equipment list, blocked status, and bookings) |
+| `src/booking.ts` | Preserves `canBook()` (AC1–AC5) unchanged and exports `checkRoom(rooms, roomId, request)` to look up a room and evaluate its own `blocked` status and `bookings` |
+| `src/filter.ts` | Exports pure function `filterRooms(rooms, criteria)` to filter the catalog by minimum attendee capacity (F1) and required equipment items (F2) |
+| (write here) | Manages UI state (selected room, time inputs, attendee/equipment filters), renders the controls, empty state (F4), and refreshed availability output (F5) without holding room data or business rules |
 
 ### 5.2 Design decisions
 
@@ -193,8 +198,8 @@ Identify the key maintainability risks in my current codebase (referencing speci
 
 | Decision | Alternative I did not take | Why |
 | --- | --- | --- |
-| (write here) | (write here) | (write here) |
-| (write here) | (write here) | (write here) |
+| Keep blocked rooms visible in the filtered room selector with a `— Blocked` label while `checkRoom()` always evaluates them as `Unavailable` (F3) | Hide blocked rooms completely inside `filterRooms()` | Hiding blocked rooms prevents users from seeing that a room matching their capacity/equipment exists or testing F3 directly in the UI; keeping them visible and rejecting them via `checkRoom()` satisfies F3 and preserves clear feedback (AC6) |
+| Keep `canBook()` untouched and build `checkRoom()` as a thin wrapper around it in `src/booking.ts` | Modify `canBook()`'s signature directly to accept a `Room` object | Preserving `canBook()`'s exact signature guarantees zero regression across all 19 baseline tests (`T01`–`T14`, `X1`, `X2`, `AC5`, `BUG-A`, `BUG-B`) and directly mitigates Risk #3 from §3.1 |
 
 ### 5.3 Duplication removed
 
@@ -202,7 +207,7 @@ Identify the key maintainability risks in my current codebase (referencing speci
 
 | Before (file / function, what was repeated) | After (where it lives now) |
 | --- | --- |
-| (write here) | (write here) |
+| `src/App.tsx` (`type Room`, `type Interval`, and hardcoded `ROOMS` array defined inline inside the UI component alongside inline room fixtures in `src/booking.test.ts`) | Consolidated into a single typed `Room` definition and `ROOMS` catalog in `src/rooms.ts`, imported by `App.tsx`, `booking.ts`, `filter.ts`, and test files |
 
 ## 6. Automated tests (Task 4)
 
