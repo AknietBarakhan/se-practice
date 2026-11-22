@@ -1,5 +1,66 @@
 import { describe, test, expect } from "vitest";
 import { canBook, type Interval } from "./booking";
+import { checkRoom } from './booking';
+import type { Room } from './rooms';
+
+const CATALOG_FIXTURE: Room[] = [
+  {
+    id: 'room-a',
+    name: 'Room A',
+    capacity: 6,
+    equipment: ['whiteboard'],
+    blocked: false,
+    bookings: [{ start: 600, end: 660 }],
+  },
+  {
+    id: 'room-b',
+    name: 'Room B',
+    capacity: 12,
+    equipment: ['projector'],
+    blocked: false,
+    bookings: [],
+  },
+  {
+    id: 'room-blocked',
+    name: 'Room Blocked',
+    capacity: 20,
+    equipment: ['projector'],
+    blocked: true,
+    bookings: [],
+  },
+];
+
+describe('checkRoom and boundary regression suite', () => {
+  test('B1 AC2: checkRoom accepts exactly 120 minutes (720-840)', () => {
+    expect(checkRoom(CATALOG_FIXTURE, 'room-b', { start: 720, end: 840, now: 540 })).toBe(true);
+  });
+
+  test('B2 AC2: checkRoom rejects 121 minutes (720-841)', () => {
+    expect(checkRoom(CATALOG_FIXTURE, 'room-b', { start: 720, end: 841, now: 540 })).toBe(false);
+  });
+
+  test('B3 AC4: checkRoom allows booking touching existing booking at endpoint (660-720)', () => {
+    expect(checkRoom(CATALOG_FIXTURE, 'room-a', { start: 660, end: 720, now: 540 })).toBe(true);
+  });
+
+  test('B4 AC4: checkRoom rejects booking overlapping existing booking (630-690)', () => {
+    expect(checkRoom(CATALOG_FIXTURE, 'room-a', { start: 630, end: 690, now: 540 })).toBe(false);
+  });
+
+  test('F3 AC3: checkRoom rejects a blocked room even with empty bookings', () => {
+    expect(checkRoom(CATALOG_FIXTURE, 'room-blocked', { start: 600, end: 660, now: 540 })).toBe(false);
+  });
+
+  test('F5 AC5: checkRoom uses chosen room bookings and leaves catalog unchanged', () => {
+    const snapshot = JSON.stringify(CATALOG_FIXTURE);
+    const roomAAvailable = checkRoom(CATALOG_FIXTURE, 'room-a', { start: 600, end: 630, now: 540 });
+    const roomBAvailable = checkRoom(CATALOG_FIXTURE, 'room-b', { start: 600, end: 630, now: 540 });
+
+    expect(roomAAvailable).toBe(false);
+    expect(roomBAvailable).toBe(true);
+    expect(JSON.stringify(CATALOG_FIXTURE)).toBe(snapshot);
+  });
+});
 
 // Fix current time at 9:00 AM (540 minutes)
 const NOW = 540;
@@ -8,6 +69,7 @@ const NOW = 540;
 const createFreshBookings = (): Interval[] => [
   { start: 600, end: 660 }
 ];
+
 
 describe("canBook final verification suite", () => {
   // --- AC1: Valid time ranges ---
